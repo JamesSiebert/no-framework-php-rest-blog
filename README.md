@@ -201,11 +201,7 @@ Response:
 ```json
 {
     "id": "3",
-    "title": "Technology Post Two",
-    "body": "Lorem ipsum...",
-    "author": "Sam Smith",
-    "category_id": "1",
-    "category_name": "Technology"
+    "name": "Auto"
 }
 ```
 
