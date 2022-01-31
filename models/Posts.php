@@ -2,7 +2,7 @@
     class Post {
         // Database
         private $conn;
-        private $table = 'posts';
+        private string $table = 'posts';
 
         // Post properties
         public $id;
@@ -20,7 +20,7 @@
 
         // Get/Read Posts
         public function read() {
-            $query = '
+            $query = "
                 SELECT
                     c.name as category_name,
                     p.id,
@@ -30,12 +30,12 @@
                     p.author,
                     p.created_at
                 FROM
-                    posts p
+                    {$this->table} p
                 LEFT JOIN
                     categories c ON p.category_id = c.id
                 ORDER BY
                     p.created_at DESC
-            ';
+            ";
 
             // Prepare Statement (PDO)
             $stmt = $this->conn->prepare($query);
@@ -45,5 +45,4 @@
 
             return $stmt;
         }
-
     }

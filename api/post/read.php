@@ -13,7 +13,6 @@
     // Instantiate blog post object
     $post = new Post($db);
 
-
     // Blog post query
     $result = $post->read();
 
@@ -40,7 +39,6 @@
             );
 
             // Push to "data"
-            // Can shorten to: $posts_arr['data'][] = $post_item;
             array_push($posts_arr['data'], $post_item);
         }
 
@@ -54,5 +52,3 @@
             array('message' => 'No Posts Found')
         );
     }
-
-
