@@ -30,11 +30,12 @@
                     p.author,
                     p.created_at
                 FROM
-                    ' . $this->table . ' p
+                    posts p
                 LEFT JOIN
                     categories c ON p.category_id = c.id
                 ORDER BY
-                    p.created_at DESC';
+                    p.created_at DESC
+            ';
 
             // Prepare Statement (PDO)
             $stmt = $this->conn->prepare($query);

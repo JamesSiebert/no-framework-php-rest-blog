@@ -4,3 +4,8 @@
 
 Reference
 https://youtu.be/OEWXbpUMODk
+
+
+Postman requests:
+
+GET http://no-framework-php-rest-blog.local/api/post/read.php

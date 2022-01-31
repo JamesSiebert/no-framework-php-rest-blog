@@ -2,7 +2,7 @@
     class Database {
         // DB Params - private to this class only
         private $host = 'localhost';
-        private $db_name = 'no-framework-php-rest-blog';
+        private $db_name = 'no_framework_php_rest_blog';
         private $username = 'root';
         private $password = 'root';
         private $conn;
