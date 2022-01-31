@@ -17,7 +17,7 @@ https://go.postman.co/workspace/Team-Workspace~1c849629-447e-4c41-8620-1c2fae5aa
 
 
 
-**Read all posts**
+**Get all posts**
 
 GET http://no-framework-php-rest-blog.local/api/post/read.php
 
@@ -38,5 +38,19 @@ Returns:
 ```
 
 
-POST
+
+**Get single post**
+
+GET http://no-framework-php-rest-blog.local/api/post/read_single.php?id=3
+
+```json
+{
+    "id": "3",
+    "title": "Technology Post Two",
+    "body": "Lorem ipsum...",
+    "author": "Sam Smith",
+    "category_id": "1",
+    "category_name": "Technology"
+}
+```
 
