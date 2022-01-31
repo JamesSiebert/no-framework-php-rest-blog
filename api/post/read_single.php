@@ -14,7 +14,7 @@
     $post = new Post($db);
 
     // Get ID from url - example.com?id=3
-    $post->id = $_GET['id'] ?? die(); // Alternative - isset($_GET['id']) ? $_GET['id'] : die();
+    $post->id = $_GET['id'] ?? die();
 
     // Get post
     $post->read_single();

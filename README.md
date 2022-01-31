@@ -18,9 +18,11 @@ https://go.postman.co/workspace/Team-Workspace~1c849629-447e-4c41-8620-1c2fae5aa
 
 
 
-**Get all posts**
+#### Get all posts
 
 GET http://no-framework-php-rest-blog.local/api/post/read.php
+
+Response:
 
 
 ```json
@@ -40,9 +42,11 @@ Returns:
 
 
 
-**Get single post**
+#### Get single post
 
 GET http://no-framework-php-rest-blog.local/api/post/read_single.php?id=3
+
+Response:
 
 ```json
 {
@@ -52,6 +56,97 @@ GET http://no-framework-php-rest-blog.local/api/post/read_single.php?id=3
     "author": "Sam Smith",
     "category_id": "1",
     "category_name": "Technology"
+}
+```
+
+
+
+#### Create post
+
+POST 
+
+Headers:
+
+```json
+Content-Type:application/json
+```
+
+Body:
+
+```json
+{
+    "title": "My Tech Post",
+    "body": "this is a sample post",
+    "author": "James",
+    "category_id": "1"
+}
+```
+
+Response:
+
+```json
+{
+    "message": "Post Created"
+}
+```
+
+
+
+#### Update post
+
+POST http://no-framework-php-rest-blog.local/api/post/update.php
+
+Headers:
+
+```json
+Content-Type:application/json
+```
+
+Body:
+
+```json
+{
+    "title": "Updated post",
+    "body": "this is a sample post",
+    "author": "James",
+    "category_id": "1",
+    "id": "4"
+}
+```
+
+Response:
+
+```json
+{
+    "message": "Post Updated"
+}
+```
+
+
+
+#### Delete post
+
+DELETE http://no-framework-php-rest-blog.local/api/post/delete.php
+
+Headers:
+
+```json
+Content-Type:application/json
+```
+
+Body:
+
+```json
+{
+    "id": "7"
+}
+```
+
+Response:
+
+```json
+{
+    "message": "Post Deleted"
 }
 ```
 

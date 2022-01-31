@@ -13,14 +13,14 @@
             $this->conn = null;
 
             try {
-                $this->conn = new PDO("mysql:host={$this->host};dbname={$this->db_name}",
+                $this->conn = new PDO(sprintf('mysql:host=%s;dbname=%s', $this->host, $this->db_name),
                     $this->username, $this->password);
 
                 // Set error mode - allows us to get exceptions when we make queries
                 $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             } catch(PDOException $e) {
-                echo "Connection Error: {$e->getMessage()}";
+                echo sprintf('Connection Error: %s', $e->getMessage());
             }
 
             return $this->conn;

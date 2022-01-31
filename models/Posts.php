@@ -20,7 +20,7 @@
 
         // Get/Read Posts
         public function read() {
-            $query = "
+            $query = sprintf('
                 SELECT
                     c.name as category_name,
                     p.id,
@@ -30,12 +30,12 @@
                     p.author,
                     p.created_at
                 FROM
-                    {$this->table} p
+                    %s p
                 LEFT JOIN
                     categories c ON p.category_id = c.id
                 ORDER BY
                     p.created_at DESC
-            ";
+            ', $this->table);
 
             // Prepare Statement (PDO)
             $stmt = $this->conn->prepare($query);
@@ -48,7 +48,7 @@
 
         // Get single post
         public function read_single() {
-            $query = "
+            $query = sprintf('
                 SELECT
                     c.name as category_name,
                     p.id,
@@ -58,13 +58,13 @@
                     p.author,
                     p.created_at
                 FROM
-                    {$this->table} p
+                    %s p
                 LEFT JOIN
                     categories c ON p.category_id = c.id
                 WHERE
                     p.id = ?
                 LIMIT 0,1
-            ";
+            ', $this->table);
 
             // Prepare Statement (PDO)
             $stmt = $this->conn->prepare($query);
@@ -88,14 +88,14 @@
         // Create post
         public function create() {
             // Create query
-            $query = "
-                INSERT INTO {$this->table}
+            $query = sprintf('
+                INSERT INTO %s
                 SET
                     title = :title,
                     body = :body,
                     author = :author,
                     category_id = :category_id
-            ";
+            ', $this->table);
 
             // Prepare statement
             $stmt = $this->conn->prepare($query);
@@ -111,6 +111,71 @@
             $stmt->bindParam(':body', $this->body);
             $stmt->bindParam(':author', $this->author);
             $stmt->bindParam(':category_id', $this->category_id);
+
+            // Execute query
+            if($stmt->execute()) {
+                return true;
+            }
+
+            // Print errors
+            printf("Error: %s. \n", $stmt->error);
+            return false;
+        }
+
+        // Update post
+        public function update() {
+            // Create query
+            $query = sprintf('
+                UPDATE %s
+                SET
+                    title = :title,
+                    body = :body,
+                    author = :author,
+                    category_id = :category_id
+                WHERE
+                    id = :id
+            ', $this->table);  // ? named parameters or positional (? or :id)
+
+            // Prepare statement
+            $stmt = $this->conn->prepare($query);
+
+            // Clean data - sanitise
+            $this->title = htmlspecialchars(strip_tags($this->title));
+            $this->body = htmlspecialchars(strip_tags($this->body));
+            $this->author = htmlspecialchars(strip_tags($this->author));
+            $this->category_id = htmlspecialchars(strip_tags($this->category_id));
+            $this->id = htmlspecialchars(strip_tags($this->id));
+
+            // Bind data
+            $stmt->bindParam(':title', $this->title);
+            $stmt->bindParam(':body', $this->body);
+            $stmt->bindParam(':author', $this->author);
+            $stmt->bindParam(':category_id', $this->category_id);
+            $stmt->bindParam(':id', $this->id);
+
+            // Execute query
+            if($stmt->execute()) {
+                return true;
+            }
+
+            // Print errors
+            printf("Error: %s. \n", $stmt->error);
+            return false;
+        }
+
+        // Delete post
+        public function delete() {
+            // Create query
+            $query = sprintf('DELETE FROM %s WHERE id = :id', $this->table);
+
+            // Prepare statement
+            $stmt = $this->conn->prepare($query);
+
+            // Sanitise data
+            $this->id = htmlspecialchars(strip_tags($this->id));
+
+            // Bind data
+            $stmt->bindParam(':id', $this->id);
 
             // Execute query
             if($stmt->execute()) {
