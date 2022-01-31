@@ -78,4 +78,33 @@
             printf("Error: %s. \n", $stmt->errors);
             return false;
         }
+
+        // Update a category
+        public function update() {
+
+            // Query
+            $query = sprintf('UPDATE %s SET name = :name WHERE id = :category_id', $this->table);
+
+            // Prepare statement
+            $stmt = $this->conn->prepare($query);
+
+            // Sanitise data
+            $this->id = htmlspecialchars(strip_tags($this->id));
+            $this->name = htmlspecialchars(strip_tags($this->name));
+
+            // Bind data
+            $stmt->bindParam(':category_id', $this->id);
+            $stmt->bindParam(':name', $this->name);
+
+            // Execute query
+            if($stmt->execute()) {
+                return true;
+            }
+
+            // Print errors
+            printf("Error: s%. \n", $stmt->errors);
+            return false;
+        }
+
+
     }

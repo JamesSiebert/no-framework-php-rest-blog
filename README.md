@@ -249,10 +249,7 @@ Body:
 
 ```json
 {
-    "title": "Updated post",
-    "body": "this is a sample post",
-    "author": "James",
-    "category_id": "1",
+    "name": "Updated category",
     "id": "4"
 }
 ```
@@ -261,7 +258,7 @@ Response:
 
 ```json
 {
-    "message": "Post Updated"
+    "message": "Category Updated"
 }
 ```
 
