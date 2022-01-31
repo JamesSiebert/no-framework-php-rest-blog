@@ -18,7 +18,7 @@ https://go.postman.co/workspace/Team-Workspace~1c849629-447e-4c41-8620-1c2fae5aa
 
 
 
-#### Get all posts
+#### Post - Get all
 
 GET http://no-framework-php-rest-blog.local/api/post/read.php
 
@@ -42,7 +42,7 @@ Returns:
 
 
 
-#### Get single post
+#### Post - Get single
 
 GET http://no-framework-php-rest-blog.local/api/post/read_single.php?id=3
 
@@ -61,7 +61,7 @@ Response:
 
 
 
-#### Create post
+#### Post - Create
 
 POST 
 
@@ -92,7 +92,7 @@ Response:
 
 
 
-#### Update post
+#### Post - Update
 
 POST http://no-framework-php-rest-blog.local/api/post/update.php
 
@@ -124,9 +124,159 @@ Response:
 
 
 
-#### Delete post
+#### Post - Delete
 
 DELETE http://no-framework-php-rest-blog.local/api/post/delete.php
+
+Headers:
+
+```json
+Content-Type:application/json
+```
+
+Body:
+
+```json
+{
+    "id": "7"
+}
+```
+
+Response:
+
+```json
+{
+    "message": "Post Deleted"
+}
+```
+
+
+
+------
+
+
+
+#### Category - Get all
+
+GET http://no-framework-php-rest-blog.local/api/category/read.php
+
+Response:
+
+
+```json
+{
+    "data": [
+        {
+            "id": "1",
+            "name": "Technology"
+        },
+        {
+            "id": "2",
+            "name": "Gaming"
+        },
+        {
+            "id": "3",
+            "name": "Auto"
+        },
+        {
+            "id": "4",
+            "name": "Entertainment"
+        },
+        {
+            "id": "5",
+            "name": "Books"
+        }
+    ]
+}
+```
+
+
+
+#### Category - Get single
+
+GET http://no-framework-php-rest-blog.local/api/category/read_single.php?id=3
+
+Response:
+
+```json
+{
+    "id": "3",
+    "title": "Technology Post Two",
+    "body": "Lorem ipsum...",
+    "author": "Sam Smith",
+    "category_id": "1",
+    "category_name": "Technology"
+}
+```
+
+
+
+#### Category - Create
+
+POST 
+
+Headers:
+
+```json
+Content-Type:application/json
+```
+
+Body:
+
+```json
+{
+    "title": "My Tech Post",
+    "body": "this is a sample post",
+    "author": "James",
+    "category_id": "1"
+}
+```
+
+Response:
+
+```json
+{
+    "message": "Post Created"
+}
+```
+
+
+
+#### Category - Update
+
+POST http://no-framework-php-rest-blog.local/api/category/update.php
+
+Headers:
+
+```json
+Content-Type:application/json
+```
+
+Body:
+
+```json
+{
+    "title": "Updated post",
+    "body": "this is a sample post",
+    "author": "James",
+    "category_id": "1",
+    "id": "4"
+}
+```
+
+Response:
+
+```json
+{
+    "message": "Post Updated"
+}
+```
+
+
+
+#### Category - Delete
+
+DELETE http://no-framework-php-rest-blog.local/api/category/delete.php
 
 Headers:
 
