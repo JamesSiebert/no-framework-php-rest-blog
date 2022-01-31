@@ -54,5 +54,28 @@
             $this->name = $row['name'];
         }
 
+        // Create a category
+        public function create() {
 
+            // Query
+            $query = sprintf('INSERT INTO %s SET name = :name', $this->table);
+
+            // Prepare statement
+            $stmt = $this->conn->prepare($query);
+
+            // Sanitise data
+            $this->name = htmlspecialchars(strip_tags($this->name));
+
+            // Bind data
+            $stmt->bindParam(':name', $this->name);
+
+            // Execute query
+            if($stmt->execute()) {
+                return true;
+            }
+
+            // Print errors
+            printf("Error: %s. \n", $stmt->errors);
+            return false;
+        }
     }

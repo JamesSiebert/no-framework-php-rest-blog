@@ -221,10 +221,7 @@ Body:
 
 ```json
 {
-    "title": "My Tech Post",
-    "body": "this is a sample post",
-    "author": "James",
-    "category_id": "1"
+    "name": "PHP"
 }
 ```
 
@@ -232,7 +229,7 @@ Response:
 
 ```json
 {
-    "message": "Post Created"
+    "message": "Category Created"
 }
 ```
 
