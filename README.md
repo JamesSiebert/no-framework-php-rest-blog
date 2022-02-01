@@ -298,17 +298,60 @@ Response:
 
 
 
-## Deployment
+## Deployment Options
 
+**Notes:** 
 
+.htaccess - Blocks access to folder views
+config/.env is for DB secrets
 
-#### CPanel
+#### cPanel Installation
 
 1. Create subdomain
 2. Link subdomain directory to GitHub & pull
 3. Create DB
 4. Seed DB - Import  migration.sql
 5. Create DB User - LIMITED ACCESS
-6. Modify config/Database.php
-7. Test by calling an end point
+6. Copy config/.envExample to the same directory and name .env
+7. Fill in the DB values
+8. cPanel Terminal: cd into project root then 'composer install'
+9. Test by calling an end point, if there are issues visit the page in your browser to see the message.
 
+
+
+#### AWS LightSail
+
+Reference: https://aws.amazon.com/getting-started/hands-on/launch-lamp-web-app/
+
+Create new LAMP instance
+
+Launch Script
+
+```
+# remove default website
+#-----------------------
+cd /opt/bitnami/apache2/htdocs 
+rm -rf *
+
+# clone github repo
+#------------------
+git clone -b loft https://github.com/JamesSiebert/no-framework-php-rest-blog .
+
+# set write permissons on the settings file
+#-----------------------------------
+chown bitnami:daemon connectvalues.php
+chmod 666 connectvalues.php
+
+# inject database password into configuration file
+#-------------------------------------------------
+sed -i.bak "s/<password>/$(cat /home/bitnami/bitnami_application_password)/;" /opt/bitnami/apache2/htdocs/connectvalues.php
+
+# create database
+#----------------
+cat /home/bitnami/htdocs/data/migration.sql | /opt/bitnami/mysql/bin/mysql -u root -p$(cat /home/bitnami/bitnami_application_password)
+```
+
+Select cheapest - 512 MB RAM, 1 vCPU, 20 GB SSD
+Name: LAMP-no-framework-php-rest-blog-1
+
+Note: to get password 'cat bitnami_application_password'
