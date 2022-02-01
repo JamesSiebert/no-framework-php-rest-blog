@@ -2,18 +2,22 @@
 
 ##  PHP REST API with no framework (blog)
 
+My GitHub repo: https://github.com/JamesSiebert/no-framework-php-rest-blog
 
+Portfolio project link: 
 
-**Reference**
+**Tutorial Reference**
 https://youtu.be/OEWXbpUMODk
 https://youtu.be/-nq4UbD0NT8
 https://youtu.be/tG2U18EmIu4
 
+Note: Tutorial includes all of Posts setup then provides the steps to implement Categories.
 
 
-### **Postman requests:**
 
-Online Collection:
+## **REQUESTS:**
+
+Postman Collection:
 https://go.postman.co/workspace/Team-Workspace~1c849629-447e-4c41-8620-1c2fae5aafb2/collection/5025758-6a03a670-c378-41a1-a42a-e34f96cfc89a
 
 
