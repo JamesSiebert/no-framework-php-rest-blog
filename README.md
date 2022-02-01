@@ -294,3 +294,21 @@ Response:
 }
 ```
 
+
+
+
+
+## Deployment
+
+
+
+#### CPanel
+
+1. Create subdomain
+2. Link subdomain directory to GitHub & pull
+3. Create DB
+4. Seed DB - Import  migration.sql
+5. Create DB User - LIMITED ACCESS
+6. Modify config/Database.php
+7. Test by calling an end point
+
