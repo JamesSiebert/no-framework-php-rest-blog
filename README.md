@@ -278,7 +278,7 @@ Body:
 
 ```json
 {
-    "id": "7"
+    "id": "3"
 }
 ```
 
@@ -286,7 +286,7 @@ Response:
 
 ```json
 {
-    "message": "Post Deleted"
+    "message": "Category Deleted"
 }
 ```
 
