@@ -355,3 +355,5 @@ Select cheapest - 512 MB RAM, 1 vCPU, 20 GB SSD
 Name: LAMP-no-framework-php-rest-blog-1
 
 Note: to get password 'cat bitnami_application_password'
+
+Generate Certificate - sudo /opt/bitnami/bncert-tool

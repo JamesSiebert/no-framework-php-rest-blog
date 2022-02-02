@@ -15,22 +15,36 @@
     // Instantiate blog post object
     $post = new Post($db);
 
-    // Get raw posted data
-    $data = json_decode(file_get_contents("php://input"));
+    // Get data from POST
+    $post->title = $_POST["title"];
+    $post->body = $_POST["body"];
+    $post->author = $_POST["author"];
+    $post->category_id = $_POST["category_id"];
 
-    $post->title = $data->title;
-    $post->body = $data->body;
-    $post->author = $data->author;
-    $post->category_id = $data->category_id;
+//    >> Doesnt work for web form <<
+//    Get raw posted data
+//    $data = json_decode(file_get_contents("php://input"));
+
+//    $post->title = $data->title;
+//    $post->body = $data->body;
+//    $post->author = $data->author;
+//    $post->category_id = $data->category_id;
 
     // Create post
     if($post->create()) {
-        echo json_encode(
-            array('message' => 'Post Created')
-        );
-    } else {
-        echo json_encode(
-            array('message' => 'Post Not Created')
-        );
-    }
+        $returnString = 'success=true';
 
+        // Redirect back with params
+        header("Location: /public/index.php?$returnString");
+    } else {
+
+        // TODO Break this down into specific error areas
+        $returnString = "message=Validation Error&title=$post->title&titleErr=true&body=$post->body&bodyErr=true&author=$post->author&authorErr=true&category=$post->category_id&categoryErr=true&imageErr=true";
+
+        // redirect back with params
+        header("Location: /public/upload.php?$returnString");
+
+//        echo json_encode(
+//            array('message' => 'Post Not Created')
+//        );
+    }
