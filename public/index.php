@@ -12,9 +12,25 @@
 </head>
 <body>
 <?php
-    // Server post success message
-    $success = isset($_GET['success']) ? filter_var($_GET['success'], FILTER_VALIDATE_BOOLEAN) : false;
 
+    // For optional redirection after post
+
+    $successMessage = isset($_GET['successMessage']) ? sanitiseText($_GET['successMessage']) : '';
+    $errorMessage = isset($_GET['errorMessage']) ? sanitiseText($_GET['errorMessage']) : '';
+
+    function sanitiseText($data): string
+    {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+
+        // Only allow letters, numbers & whitespace
+        if (!preg_match("/^[a-zA-Z0-9-' ]*$/", $data)) {
+            // TODO show error message
+            return '';
+        }
+        return $data;
+    }
 ?>
 
 <!--Simple Navbar-->
@@ -27,7 +43,7 @@
                     <a class="nav-link active" aria-current="page" href="./index.php">View Feed</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="upload.php">Create a post</a>
+                    <a class="nav-link" href="upload_form.php">Create a post</a>
                 </li>
             </ul>
         </div>
@@ -35,24 +51,6 @@
 </nav>
 
 <div class="container">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <div class="mx-auto" style="width: 400px;">
         <div class="card border-primary mb-3 mt-5">
             <div class="card-body text-primary">
@@ -61,33 +59,12 @@
                     Check out our awesome blog!
                 </div>
                 <div class="mt-3">
-                    <!-- Success Message-->
-                    <?PHP echo $success ? '<div class="alert alert-success" role="alert">Your image was posted!</div>' : '<div></div>'; ?>
+                    <!-- Messages from server-->
+                    <?php if($successMessage) {echo "<div class='alert alert-success' role='alert'>$successMessage</div>";}?>
+                    <?php if($errorMessage) {echo "<div class='alert alert-danger' role='alert'>$errorMessage</div>";}?>
                 </div>
 
                 <div>
-                    <!-- image gen -->
-<!--                    --><?php
-//                        $colors = array("red", "green", "blue", "yellow");
-//
-//                        foreach ($colors as $key => $value) {
-//
-//                            echo "
-//                                <div class='mb-3 card'>
-//                                    <img src='https://picsum.photos/400/400?random=$key' class='card-img-top' alt='User Image'>
-//                                    <div class='card-body'>
-//                                        <p class='card-text text-secondary'>
-//                                            <b>Title:</b> Test Title<br>
-//                                            <b>Body:</b> Test Body<br>
-//                                            <b>Author:</b> Test Author<br>
-//                                            <b>Category:</b> Test Category
-//                                        </p>
-//                                    </div>
-//                                </div>
-//                            ";
-//                        }
-//                    ?>
-
                     <div id="post-list"></div>
                     <script>
                         fetch('http://no-framework-php-rest-blog.local/api/post/read.php')

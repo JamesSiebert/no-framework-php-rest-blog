@@ -1,36 +1,28 @@
 <?php
 
-// Enable sessions
-session_start();
+// Include CSRF class
+require_once ("CSRF.php");
 
-if (!is_writable(session_save_path())) {
-    echo 'Session path "'.session_save_path().'" is not writable for PHP!';
-}
+// CSRF Token
+$token = CSRF::createTokenOnly(15);
+$showTokenDebug = true; // For demo only
 
-// Assign token & generated timestamp to session
-$_SESSION['csrf-token'] = bin2hex(random_bytes(32));
-$_SESSION['csrf-token-expire'] = time() + 3600; // 1hr
-print_r($_SESSION);
+// Messages from server
+$successMessage = isset($_GET['successMessage']) ? sanitiseText($_GET['successMessage']) : '';
+$errorMessage = isset($_GET['errorMessage']) ? sanitiseText($_GET['errorMessage']) : '';
 
-
-// Server message on validation failure
-$message = sanitiseText($_GET['message'] ?? '');
-
-// Re-Fill params on server validation failure
+// Re-Fill params on server validation failure - could have also used $_SESSION
 $title = isset($_GET['title']) ? sanitiseText($_GET['title']) : '';
 $body = isset($_GET['body']) ? sanitiseText($_GET['body']) : '';
 $author = isset($_GET['author']) ? sanitiseText($_GET['author']) : '';
 $category = isset($_GET['category']) ? sanitiseText($_GET['category']) : '';
 
-// Enable form error class
+// Trigger error styles on form
 $titleErr = isset($_GET['titleErr']) ? filter_var($_GET['titleErr'], FILTER_VALIDATE_BOOLEAN) : false;
 $bodyErr = isset($_GET['bodyErr']) ? filter_var($_GET['bodyErr'], FILTER_VALIDATE_BOOLEAN) : false;
 $authorErr = isset($_GET['authorErr']) ? filter_var($_GET['authorErr'], FILTER_VALIDATE_BOOLEAN) : false;
 $categoryErr = isset($_GET['categoryErr']) ? filter_var($_GET['categoryErr'], FILTER_VALIDATE_BOOLEAN) : false;
 $imageErr = isset($_GET['imageErr']) ? filter_var($_GET['imageErr'], FILTER_VALIDATE_BOOLEAN) : false;
-
-
-
 
 function sanitiseText($data): string
 {
@@ -45,10 +37,7 @@ function sanitiseText($data): string
     }
     return $data;
 }
-
 ?>
-
-
 
 <!doctype html>
 <html lang="en">
@@ -64,8 +53,6 @@ function sanitiseText($data): string
 </head>
 <body>
 
-
-
     <!--Simple Navbar-->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
@@ -76,7 +63,7 @@ function sanitiseText($data): string
                         <a class="nav-link" aria-current="page" href="./index.php">View Feed</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="upload.php">Create a post</a>
+                        <a class="nav-link active" href="upload_form.php">Create a post</a>
                     </li>
                 </ul>
             </div>
@@ -91,22 +78,24 @@ function sanitiseText($data): string
                     <div class="mt-3">
                         <div class="mt-2 alert alert-info" role="alert">
                             Example Info
-                        </div>
-                        <!-- Error Messages from server-->
-                        <?php echo $message ? '<div class="alert alert-danger" role="alert">' . $message . '</div>' : '<div></div>'; ?>
 
-                        <!-- Other error messages (CSRF) -->
-<!--                        --><?php //if(count($errors) > 0) {
-//                            foreach ($errors as $error) {
-//                                echo "<div class='alert alert-danger' role='alert'>$error</div>";
-//                            }
-//                        }?>
+                            <!-- Token expiry info for demo only -->
+                            <?php if($showTokenDebug){
+                                echo '<br><br>CSRF TESTING:<br>CurrentTime: ' . time() . '<br>Token Expire: ' . $_SESSION["csrf-token-expire"];
+                                echo '<br><a href="time_check.php" target="_blank">Show current timestamp</a>';
+                            }?>
+
+                        </div>
+                        <!-- Messages from server-->
+                        <?php if($successMessage) {echo "<div class='alert alert-success' role='alert'>$successMessage</div>";}?>
+                        <?php if($errorMessage) {echo "<div class='alert alert-danger' role='alert'>$errorMessage</div>";}?>
                     </div>
 
                     <form action="../api/post/create.php" method="POST" enctype="multipart/form-data">
 
                         <!-- CSRF Token -->
-                        <input type="hidden" name="csrf_token" value="<?php echo $token; ?>" />
+                        <!-- could also use CSRF::createToken() to generate token and field -->
+                        <input type='hidden' name='csrf-token' value='<?php echo $token ?>' />
 
                         <div class="mb-3">
                             <label for="formControlInputName" class="form-label">Title</label>
