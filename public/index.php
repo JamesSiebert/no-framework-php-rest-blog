@@ -13,8 +13,7 @@
 <body>
 <?php
 
-    // For optional redirection after post
-
+    // Below is here in case we want to allow redirection to index after a successful post.
     $successMessage = isset($_GET['successMessage']) ? sanitiseText($_GET['successMessage']) : '';
     $errorMessage = isset($_GET['errorMessage']) ? sanitiseText($_GET['errorMessage']) : '';
 
