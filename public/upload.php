@@ -1,3 +1,55 @@
+<?php
+
+// Enable sessions
+session_start();
+
+if (!is_writable(session_save_path())) {
+    echo 'Session path "'.session_save_path().'" is not writable for PHP!';
+}
+
+// Assign token & generated timestamp to session
+$_SESSION['csrf-token'] = bin2hex(random_bytes(32));
+$_SESSION['csrf-token-expire'] = time() + 3600; // 1hr
+print_r($_SESSION);
+
+
+// Server message on validation failure
+$message = sanitiseText($_GET['message'] ?? '');
+
+// Re-Fill params on server validation failure
+$title = isset($_GET['title']) ? sanitiseText($_GET['title']) : '';
+$body = isset($_GET['body']) ? sanitiseText($_GET['body']) : '';
+$author = isset($_GET['author']) ? sanitiseText($_GET['author']) : '';
+$category = isset($_GET['category']) ? sanitiseText($_GET['category']) : '';
+
+// Enable form error class
+$titleErr = isset($_GET['titleErr']) ? filter_var($_GET['titleErr'], FILTER_VALIDATE_BOOLEAN) : false;
+$bodyErr = isset($_GET['bodyErr']) ? filter_var($_GET['bodyErr'], FILTER_VALIDATE_BOOLEAN) : false;
+$authorErr = isset($_GET['authorErr']) ? filter_var($_GET['authorErr'], FILTER_VALIDATE_BOOLEAN) : false;
+$categoryErr = isset($_GET['categoryErr']) ? filter_var($_GET['categoryErr'], FILTER_VALIDATE_BOOLEAN) : false;
+$imageErr = isset($_GET['imageErr']) ? filter_var($_GET['imageErr'], FILTER_VALIDATE_BOOLEAN) : false;
+
+
+
+
+function sanitiseText($data): string
+{
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+
+    // Only allow letters, numbers & whitespace
+    if (!preg_match("/^[a-zA-Z0-9-' ]*$/", $data)) {
+        // TODO show error message
+        return '';
+    }
+    return $data;
+}
+
+?>
+
+
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -12,39 +64,7 @@
 </head>
 <body>
 
-<?php
 
-    // Server message on validation failure
-    $message = sanitiseText($_GET['message'] ?? '');
-
-    // Re-Fill params on server validation failure
-    $title = isset($_GET['title']) ? sanitiseText($_GET['title']) : '';
-    $body = isset($_GET['body']) ? sanitiseText($_GET['body']) : '';
-    $author = isset($_GET['author']) ? sanitiseText($_GET['author']) : '';
-    $category = isset($_GET['category']) ? sanitiseText($_GET['category']) : '';
-
-    // Enable form error class
-    $titleErr = isset($_GET['titleErr']) ? filter_var($_GET['titleErr'], FILTER_VALIDATE_BOOLEAN) : false;
-    $bodyErr = isset($_GET['bodyErr']) ? filter_var($_GET['bodyErr'], FILTER_VALIDATE_BOOLEAN) : false;
-    $authorErr = isset($_GET['authorErr']) ? filter_var($_GET['authorErr'], FILTER_VALIDATE_BOOLEAN) : false;
-    $categoryErr = isset($_GET['categoryErr']) ? filter_var($_GET['categoryErr'], FILTER_VALIDATE_BOOLEAN) : false;
-    $imageErr = isset($_GET['imageErr']) ? filter_var($_GET['imageErr'], FILTER_VALIDATE_BOOLEAN) : false;
-
-    function sanitiseText($data): string
-    {
-        $data = trim($data);
-        $data = stripslashes($data);
-        $data = htmlspecialchars($data);
-
-        // Only allow letters, numbers & whitespace
-        if (!preg_match("/^[a-zA-Z0-9-' ]*$/", $data)) {
-            // TODO show error message
-            return '';
-        }
-        return $data;
-    }
-
-?>
 
     <!--Simple Navbar-->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -72,11 +92,22 @@
                         <div class="mt-2 alert alert-info" role="alert">
                             Example Info
                         </div>
-                        <!-- Error Message-->
-                        <?PHP echo $message ? '<div class="alert alert-danger" role="alert">' . $message . '</div>' : '<div></div>'; ?>
+                        <!-- Error Messages from server-->
+                        <?php echo $message ? '<div class="alert alert-danger" role="alert">' . $message . '</div>' : '<div></div>'; ?>
+
+                        <!-- Other error messages (CSRF) -->
+<!--                        --><?php //if(count($errors) > 0) {
+//                            foreach ($errors as $error) {
+//                                echo "<div class='alert alert-danger' role='alert'>$error</div>";
+//                            }
+//                        }?>
                     </div>
 
                     <form action="../api/post/create.php" method="POST" enctype="multipart/form-data">
+
+                        <!-- CSRF Token -->
+                        <input type="hidden" name="csrf_token" value="<?php echo $token; ?>" />
+
                         <div class="mb-3">
                             <label for="formControlInputName" class="form-label">Title</label>
                             <input
