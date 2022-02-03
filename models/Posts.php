@@ -55,6 +55,45 @@
         }
 
         // Get single post
+        public function checkForExistingPostTitle() {
+            $query = sprintf('
+                SELECT
+                    p.id,
+                    p.image_id,
+                    p.ip_address,
+                    p.category_id,
+                    p.title,
+                    p.body,
+                    p.author,
+                    p.created_at
+                FROM
+                    %s p
+                WHERE
+                    p.title = :title
+                LIMIT 0,1
+            ', $this->table);
+
+            // Prepare Statement (PDO)
+            $stmt = $this->conn->prepare($query);
+
+            // Bind ID - the 1st parameter should bind to this id
+            $stmt->bindParam(':title', $this->title);
+
+            // Execute query
+            $stmt->execute();
+
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            // Set properties
+            $this->title = $row['title'];
+            $this->body = $row['body'];
+            $this->author = $row['author'];
+            $this->category_id = $row['category_id'];
+            $this->category_name = $row['category_name'];
+        }
+
+
+        // Get single post
         public function read_single() {
             $query = sprintf('
                 SELECT
@@ -96,8 +135,62 @@
         // Create post
         public function create(): bool
         {
-            // Create query
-            $query = sprintf('
+            // query to check a specific post title
+            $checkQuery = sprintf('
+                SELECT
+                    p.id,
+                    p.title, 
+                    p.body,
+                    p.author,
+                    p.category_id,
+                    p.image_id,
+                    p.ip_address,
+                    p.created_at
+                FROM
+                    %s p
+                WHERE
+                    p.title = :title
+                LIMIT 0,1
+            ', $this->table);
+
+            // Run query
+            $checkStmt = $this->conn->prepare($checkQuery);
+            $checkStmt->bindParam(':title', $this->title);
+            $checkStmt->execute();
+            $checkRow = $checkStmt->fetch(PDO::FETCH_ASSOC);
+
+            $runUpdate = false;
+
+            if($checkRow) {
+                // a post with the same title exists
+
+                if($checkRow['ip_address'] == $this->ip_address) {
+
+                    $runUpdate = true;
+
+                    // IP address match - Use update query
+                    $query = sprintf('
+                        UPDATE %s
+                        SET
+                            title = :title,
+                            body = :body,
+                            author = :author,
+                            category_id = :category_id,
+                            image_id = :image_id,
+                            ip_address = :ip_address
+                        WHERE
+                            id = :id
+                    ', $this->table);  // ? named parameters or positional (? or :id)
+
+                    // TODO Consideration here for deleting the old image
+                } else {
+                    // Different IP - tell user to choose a new title
+                    return false;
+                }
+            } else {
+
+                // No posts with same title exist - use create query
+                $query = sprintf('
                 INSERT INTO %s
                 SET
                     title = :title,
@@ -107,20 +200,23 @@
                     image_id = :image_id,
                     ip_address = :ip_address
             ', $this->table);
+            }
 
             // Prepare statement
             $stmt = $this->conn->prepare($query);
 
             // Clean data - sanitise
-            $this->title = htmlspecialchars(strip_tags($this->title));
-            $this->body = htmlspecialchars(strip_tags($this->body));
-            $this->author = htmlspecialchars(strip_tags($this->author));
-            $this->category_id = htmlspecialchars(strip_tags($this->category_id));
-            // $this->image_id
-            // $this->ip_address
-
+            $this->title = sanitiseBasic($this->title);
+            $this->body = sanitiseBasic($this->body);
+            $this->author = sanitiseBasic($this->author);
+            $this->category_id = sanitiseBasic($this->category_id);
+            $this->image_id = sanitiseBasic($this->image_id);
+            $this->ip_address = sanitiseBasic($this->ip_address);
 
             // Bind data
+            if($runUpdate){
+                $stmt->bindParam(':id', $checkRow['id']);
+            }
             $stmt->bindParam(':title', $this->title);
             $stmt->bindParam(':body', $this->body);
             $stmt->bindParam(':author', $this->author);
@@ -203,5 +299,14 @@
             // Print errors
             printf("Error: %s. \n", $stmt->error);
             return false;
+        }
+
+        function sanitiseBasic($data): string
+        {
+            $data = trim($data);
+            $data = stripslashes($data);
+            $data = htmlspecialchars($data);
+
+            return $data;
         }
     }

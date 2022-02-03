@@ -4,7 +4,7 @@
 require_once ("CSRF.php");
 
 // CSRF Token
-$token = CSRF::createTokenOnly(15);
+$token = CSRF::createTokenOnly(30);
 $showTokenDebug = true; // For demo only
 
 // Messages from server
@@ -81,8 +81,9 @@ function sanitiseText($data): string
 
                             <!-- Token expiry info for demo only -->
                             <?php if($showTokenDebug){
-                                echo '<br><br>CSRF TESTING:<br>CurrentTime: ' . time() . '<br>Token Expire: ' . $_SESSION["csrf-token-expire"];
-                                echo '<br><a href="time_check.php" target="_blank">Show current timestamp</a>';
+                                echo '<br><br>Your IP Address: ' . $_SERVER["REMOTE_ADDR"] . '<br><br>';
+                                echo 'CSRF TESTING:<br>CurrentTime: ' . time() . '<br>Token Expire: ' . $_SESSION["csrf-token-expire"] . '<br>';
+                                echo '<a href="time_check.php" target="_blank">Show current timestamp</a>';
                             }?>
 
                         </div>
@@ -147,7 +148,7 @@ function sanitiseText($data): string
 
                         <div class="mb-3">
                             <label for="formFile" class="form-label">Image file</label>
-                            <input name="image" class="form-control <?PHP echo $imageErr ? 'is-invalid' : ''; ?>" type="file" id="formFile" required>
+                            <input name="fileToUpload" class="form-control <?PHP echo $imageErr ? 'is-invalid' : ''; ?>" type="file" id="fileToUpload" required>
                             <small>(Ideal size: 400px wide by 300px high)</small>
                         </div>
 
