@@ -9,11 +9,6 @@
 
     class Database {
 
-        // DB Params - private to this class only
-        // private string $host = 'localhost';
-        // private string $db_name = 'no_framework_php_rest_blog';
-        // private string $username = 'root';
-        // private string $password = 'root';
         private $conn;
 
         // DB Connect
@@ -24,9 +19,6 @@
             try {
                 $this->conn = new PDO(sprintf('mysql:host=%s;dbname=%s', $_ENV['DB_HOST'], $_ENV['DB_NAME']),
                     $_ENV['DB_USER'], $_ENV['DB_PASS']);
-
-//                $this->conn = new PDO(sprintf('mysql:host=%s;dbname=%s', $this->host, $this->db_name),
-//                    $this->username, $this->password);
 
                 // Set error mode - allows us to get exceptions when we make queries
                 $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

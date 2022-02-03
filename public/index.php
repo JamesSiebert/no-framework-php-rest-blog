@@ -91,13 +91,15 @@
 
                                 div.innerHTML = `
                                 <div class='mb-3 card'>
-                                    <img src='https://picsum.photos/400/300?random=${index}' class='card-img-top' alt='User Image'>
+                                    <img src='images/${item.filename}' class='card-img-top' alt='User Image'>
                                     <div class='card-body'>
                                         <p class='card-text text-secondary'>
                                             <b>Title:</b> ${item.title}<br>
                                             <b>Body:</b> ${item.body}<br>
                                             <b>Author:</b> ${item.author}<br>
-                                            <b>Category:</b> ${item.category_name}
+                                            <b>Category:</b> ${item.category_name}<br>
+                                            <b>Filename:</b> ${item.filename}<br>
+                                            <b>IP Address:</b> ${item.ip_address}<br>
                                         </p>
                                     </div>
                                 </div>
@@ -107,7 +109,6 @@
                             })
                         }
                     </script>
-
 
                 </div>
             </div>

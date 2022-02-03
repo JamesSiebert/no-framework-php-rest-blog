@@ -5,9 +5,9 @@
         private string $table = 'categories';
 
         // Properties
-        public $id;
-        public $name;
-        public $created_at;
+        public int $id;
+        public string $name;
+        public string $created_at;
 
         // Constructor
         public function __construct($db) {

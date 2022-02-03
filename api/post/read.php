@@ -32,10 +32,12 @@
             $post_item = array(
                 'id' => $id,
                 'title' => $title,
-                'body' => html_entity_decode($body), // Allows HTML for body
+                'body' => $body, // html_entity_decode($body) Allows HTML for body
                 'author' => $author,
                 'category_id' => $category_id,
-                'category_name' => $category_name
+                'category_name' => $category_name,
+                'filename' => $image_filename,
+                'ip_address' => $ip_address
             );
 
             // Push to "data"

@@ -5,13 +5,15 @@
         private string $table = 'posts';
 
         // Post properties
-        public $id;
-        public $category_id;
-        public $category_name;
-        public $title;
-        public $body;
-        public $author;
-        public $created_at;
+        public int $id;
+        public int $category_id;
+        public string $category_name;
+        public string $title;
+        public string $body;
+        public string $author;
+        public string $image_id;
+        public string $ip_address;
+        public string $created_at;
 
         // Constructor - Runs on instantiation of this class
         public function __construct($db) {
@@ -23,16 +25,22 @@
             $query = sprintf('
                 SELECT
                     c.name as category_name,
+                    i.filename as image_filename,
+                    i.updated_at as image_updated_at,
                     p.id,
                     p.category_id,
                     p.title,
                     p.body,
                     p.author,
+                    p.image_id,
+                    p.ip_address,
                     p.created_at
                 FROM
                     %s p
                 LEFT JOIN
                     categories c ON p.category_id = c.id
+                LEFT JOIN
+                    images i ON p.image_id = i.id
                 ORDER BY
                     p.created_at DESC
             ', $this->table);
@@ -86,7 +94,8 @@
         }
 
         // Create post
-        public function create() {
+        public function create(): bool
+        {
             // Create query
             $query = sprintf('
                 INSERT INTO %s
@@ -94,7 +103,9 @@
                     title = :title,
                     body = :body,
                     author = :author,
-                    category_id = :category_id
+                    category_id = :category_id,
+                    image_id = :image_id,
+                    ip_address = :ip_address
             ', $this->table);
 
             // Prepare statement
@@ -105,12 +116,17 @@
             $this->body = htmlspecialchars(strip_tags($this->body));
             $this->author = htmlspecialchars(strip_tags($this->author));
             $this->category_id = htmlspecialchars(strip_tags($this->category_id));
+            // $this->image_id
+            // $this->ip_address
+
 
             // Bind data
             $stmt->bindParam(':title', $this->title);
             $stmt->bindParam(':body', $this->body);
             $stmt->bindParam(':author', $this->author);
             $stmt->bindParam(':category_id', $this->category_id);
+            $stmt->bindParam(':image_id', $this->image_id);
+            $stmt->bindParam(':ip_address', $this->ip_address);
 
             // Execute query
             if($stmt->execute()) {
@@ -123,7 +139,8 @@
         }
 
         // Update post
-        public function update() {
+        public function update(): bool
+        {
             // Create query
             $query = sprintf('
                 UPDATE %s
@@ -164,7 +181,8 @@
         }
 
         // Delete post
-        public function delete() {
+        public function delete(): bool
+        {
             // Create query
             $query = sprintf('DELETE FROM %s WHERE id = :id', $this->table);
 
